@@ -1,0 +1,112 @@
+﻿@{
+    ViewBag.Title = "Contact";
+}
+<style>
+    body {
+        background-color: white;
+        color: black;
+    }
+
+    .navbar-dark .navbar-toggler-icon {
+        background-image: url('../../content/images/list.svg') !important;
+    }
+
+    a {
+        cursor: pointer;
+    }
+
+    .navbar-dark {
+        background-color: white !important;
+    }
+
+    .nav-link {
+        color: black !important;
+    }
+
+    .navbar-dark .navbar-brand {
+        color: black;
+    }
+
+    .contact-box {
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        margin: 0 5rem;
+    }
+
+    .cont-img img{
+        width: 100%;
+    }
+
+    .cont-email {
+        padding-top: 3rem;
+    }
+
+    .footer-icons {
+        background-color: white;
+        color: black !important;
+    }
+
+        .footer-icons a {
+            color: black !important;
+        }
+
+    .navbar-dark .navbar-brand:focus, .navbar-dark .navbar-brand:hover {
+        color: black;
+    }
+
+
+        .cont-email a {
+            color: var(--primary);
+            text-decoration: none;
+            opacity: 0.7;
+            transition: opacity .5s ease-out;
+            -moz-transition: opacity .5s ease-out;
+            -webkit-transition: opacity .5s ease-out;
+            -o-transition: opacity .5s ease-out;
+        }
+
+            .cont-email a:hover {
+                opacity: 1;
+            }
+
+    .cont-img {
+        background-image: url('../../content/images/cont-img.png');
+        background-repeat: no-repeat;
+        background-size: cover;
+        background-position: top center;
+        height: 55vh;
+    }
+
+        .cont-img img {
+            opacity: 0;
+        }
+
+    .footer-icons {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
+    @@media(max-width:500px) {
+        .contact-box {
+            margin: 0 2rem;
+        }
+    }
+
+    @@media(max-height: 700px) {
+        .cont-email {
+            padding-top: 8rem;
+        }
+    }
+</style>
+
+<div class="contact-box">
+    <div class="cont-email">
+        <h4><a href="mailto:mail@lesliedsouza.com">mail@@lesliedsouza.com</a></h4>
+    </div>
+    <div class="cont-img">
+        <img src="~/Content/Images/cont-img.png" />
+    </div>
+</div>

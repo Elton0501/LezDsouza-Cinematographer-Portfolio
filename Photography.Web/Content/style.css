@@ -1,0 +1,70 @@
+﻿@import url('fonts.css');
+
+body {
+    font-family: 'osr';
+    background-color: var(--primary);
+}
+
+:root {
+    /*theme color*/
+    --text: #ffffff;
+    --primary: black;
+    --secondary: #31150a;
+    --light: #91371c;
+    --error: red;
+    /*grediant (webgradiant.com) color */
+    --sky: linear-gradient(120deg, #a1c4fd 0%, #c2e9fb 100%);
+    /*theme font-family*/
+}
+
+.navbar-toggler{
+    border: none !important;
+}
+
+.navbar-toggler:focus, .navbar-toggler:hover {
+    text-decoration: none;
+    border: none !important;
+}
+
+
+
+.footer-icons {
+    background-color: black;
+    color: white !important;
+    text-align: center;
+    padding: 10px;
+    font-size: 3vh;
+}
+
+.footer-icons a {
+    color: white !important;
+}
+
+.nav-link {
+    letter-spacing: 1px;
+}
+
+.navbar-dark {
+    background-color: black !important;
+    padding: 1rem !important;
+}
+
+.footer-icons {
+    padding:1rem !important;
+}
+.row {
+    margin: 0 !important;
+    padding: 0 !important;
+}
+
+@media(max-width: 500px){
+
+    .nav-cont h2 {
+        font-size: 1.75rem;
+        margin-bottom: 0;
+    }
+    
+    .nav-cont p {
+        font-size: 1.1rem;
+    }
+}

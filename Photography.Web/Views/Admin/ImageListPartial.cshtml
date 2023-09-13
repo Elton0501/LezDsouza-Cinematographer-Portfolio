@@ -1,0 +1,217 @@
+﻿@model DataModels.ImagesDataModel
+@{
+    Layout = null;
+    int Count = 0;
+    int imagesCount = Model.Pager.TotalItems != null ? Model.Pager.TotalItems : 0;
+}
+<style>
+    .nav-btn {
+        text-align: center;
+    }
+
+        .nav-btn button {
+            background-color: #bcbdbc;
+            color: white;
+            border: none;
+            padding: 3px 10px;
+            border-radius: 4px;
+        }
+</style>
+@if (Model.Images != null && Model.Images.Count() > 0)
+{
+    <table class="product-table table table-bordered" id="OrderViewTable" cellspacing="0">
+        <thead class="thead-dark">
+            <tr>
+                <th>#</th>
+                <th>Action</th>
+                <th>Id</th>
+                <th class="w-25">Image</th>
+                <th>Type</th>
+                <th>Date</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Images)
+            {
+                Count = Count + 1;
+            <tr>
+                <td>@Count</td>
+                <td>
+                    <div class="row m-0">
+                        <div class="button-act"><a class="editbtn btn btn-default btn-outline-dark" href="@Url.Action("EditImage","Admin",new {id = item.Id})" title="Edit"><i class="bi bi-pencil-square"></i></a></div>
+                        <div style="display:none" class="button-act"><a class="deletebtn btn btn-default btn-outline-danger" href="@Url.Action("WorkDelete","Admin",new {id = item.Id})" title="Delete"><i class="bi bi-trash"></i></a></div>
+                    </div>
+                </td>
+                <td>@item.Id</td>
+                <td><img src="@item.Image" alt="@item.Image" class="w-25" /></td>
+                <td>@item.TypeName</td>
+                <td>@item.CreatedOn.ToString("dd-MMMM-yyyy")</td>
+                <td>
+                    <div class="form-check form-check-inline">
+                        @{
+                            var trueCheckedStatus = item.IsActive == true ? "Checked" : string.Empty;
+                        }
+                        <input type="hidden" name="Status" value='@item.IsActive' id="chkstatus" title="Status" />
+                        <input class="form-check-input status-cb" data-id="@item.Id" id="chkstatus" type="checkbox" @trueCheckedStatus>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+
+}
+else
+{
+    <h6 class="text-capitalize text-center pt-4">No data availble</h6>
+}
+<br />
+<input type="hidden" id="pageNo" value="@Model.pageNo" />
+
+<div class="nav-btn">
+    @if (Model.Pager != null)
+    {
+        if (Model.Pager.CurrentPage > 1)
+        {
+            <button class="pagebtn" data-pageNo="@(Model.Pager.CurrentPage -1)"><i class="bi bi-arrow-left"></i></button>
+        }
+
+        for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
+        {
+            string activeclass = Model.Pager.CurrentPage == page ? "active bg-danger" : string.Empty;
+            <button class="@activeclass pagebtn" data-pageNo="@page">@page</button>
+        }
+
+        if (Model.Pager.CurrentPage < Model.Pager.TotalPages)
+        {
+            <button class="pagebtn" data-pageNo="@(Model.Pager.CurrentPage +1)"><i class="bi bi-arrow-right"></i></button>
+        }
+    }
+</div>
+<script>
+    $(document).ready(function () {
+        $("#imagesCount").html('@imagesCount');
+    });
+    $(".pagebtn").click(function () {
+        var value = $(this).attr("data-pageNo");
+        $("#pageNo").val(value);
+        loadPOPartial();
+    });
+        //--------------Status-chechbox--------------------//
+
+    $('.status-cb').change(function () {
+        if ($(this).prop("checked") == true) {
+            Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to change the status!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Change it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title:'Status',
+                    text:'Changed',
+                    icon:'success',
+                    showConfirmButton: false,
+                })
+            var ProId = $(this).attr("data-id");
+            var Status = true;
+            $.ajax({
+                type:'POST',
+            url: '@Url.Action("ImageStatus", "Admin")',
+            data: {
+                status: Status,
+                proId: ProId
+            }
+        })
+        .done(function (response) {
+            if (response == true) {
+                Swal.fire({
+                    title: 'Done',
+                    text: 'Successfully Change the status!',
+                })
+            }
+            else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                })
+            }
+        })
+        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        });
+            }
+            else {
+                window.location.reload();
+            }
+        })
+        }
+        else if ($(this).prop("checked") == false) {
+         Swal.fire({
+            title: 'Are you sure?',
+            text: "You want to change the status",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, Change it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    title: 'Status',
+                    text: 'Changed',
+                    icon: 'success',
+                    showConfirmButton: false,
+                })
+                var ProId = $(this).attr("data-id");
+                var Status = false;
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("ImageStatus", "Admin")',
+                    data: {
+                        status: Status,
+                        proId: ProId
+                    }
+                })
+                    .done(function (response) {
+                        if (response == true) {
+                            Swal.fire({
+                                title: 'Done',
+                                text: 'Successfully Change the status!',
+                            })
+                        }
+                        else {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Oops...',
+                                text: 'Something went wrong!',
+                            })
+                        }
+                    })
+                    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Oops...',
+                            text: 'Something went wrong!',
+                        })
+                    });
+            }
+            else {
+                window.location.reload();
+            }
+        })
+        }
+
+    });
+    //------------//--Status-chechbox--//------------------//
+</script>

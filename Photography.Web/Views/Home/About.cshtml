@@ -1,0 +1,93 @@
+﻿@{
+    ViewBag.Title = "About";
+}
+    <style>
+        .abt-box {
+            margin-top: 12rem;
+            color: var(--text);
+        }
+
+        @@media(min-width: 768px) {
+            .abt-box {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 3rem;
+            }
+
+            .footer-icons {
+                position: fixed;
+                bottom: 0;
+                width: 100%;
+            }
+
+            .abt-box {
+                height: 100vh;
+            }
+
+            .abt-img {
+                display: flex;
+            }
+
+                .abt-img img {
+                    width: 100%;
+                    margin: auto;
+                }
+
+            .abt-cont {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+        }
+
+        @@media(min-width: 1200px) {
+            .abt-img img {
+                width: 70%;
+                margin: auto;
+            }
+        }
+        @@media(max-height: 700px) {
+            .abt-box {
+                font-size: 0.77rem;
+            }
+        }
+    </style>
+
+    <div class="container abt-box">
+        <div class="row">
+            <div class="abt-img col-lg-6 col-md-6 col-12 pr-4">
+                <img src="~/Content/Images/abtimg.png" />
+            </div>
+            <div class="abt-cont col-lg-6 col-md-6 col-12 pl-4">
+                <p>
+                    Leslie D'souza is a Mumbai, India based Cinematographer. His work
+                    ranges across a variety of visual storytelling mediums: Long Formats, Short films,
+                    Commercials, Fashion, Food, Music videos, Talk shows and more.
+                </p>
+                <p>
+                    He has completed a short term Advance Cinematography course from
+                    SKIFT FTII PUNE under the Mentorship of
+                    A S KANNAL sir. Most of his
+                    learnings have been further polished on sets with direction from Great Cinematographers. He has been a strong second to these great artists
+                    performing various roles like 1st AC , Camera Operator, Second Unit DOP
+                    & Ronin Operator.
+                </p>
+                <p>
+                    Mentored by the likes of Dhruv Lapsia, Arnold Fernandes, Manoj Lobo,
+                    Bhushankumar Jain, Sudhakar Reddy, Vaishnav Tiwari and Vivian Shahi.
+                    Leslie has been a valuable asset on sets for the past 5 and a half years
+                    and continues to make progress there.
+                    Story always comes first and is always the primary motivation of his
+                    approach to Lighting and Camera work.
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        img {
+            width: 100%;
+        }
+    </style>
+

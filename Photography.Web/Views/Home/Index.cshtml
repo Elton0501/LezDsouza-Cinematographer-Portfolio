@@ -1,0 +1,142 @@
+﻿@model Models.HomeBanner
+@{
+    ViewBag.Title = "Home Page";
+}
+
+
+<style>
+
+    @@-webkit-keyframes fade-in {
+        0% {
+            opacity: 0;
+        }
+
+        100% {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes scale {
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    @@keyframes fade-into {
+        100% {
+            opacity: 1;
+            filter: blur(0);
+        }
+    }
+
+
+    body {
+        /*        background: url('../../content/images/b1.png') no-repeat center center fixed;*/
+        background-repeat: no-repeat;
+        background-position: center center;
+        -webkit-background-size: cover;
+        -moz-background-size: cover;
+        -o-background-size: cover;
+        background-size: cover;
+        background-attachment: fixed;
+        -webkit-animation-name: fade-in;
+        -webkit-animation-duration: .60s;
+        -webkit-animation-timing-function: ease-in;
+    }
+
+    h1 {
+        text-align: center;
+        transform: scale(0.94);
+        animation: scale 3s forwards cubic-bezier(0.5, 1, 0.89, 1);
+        opacity: 0;
+        filter: blur(4px);
+        animation: fade-into 1.2s 0.1s forwards cubic-bezier(0.11, 0, 0.5, 0);
+        -webkit-animation-delay: 0.75s;
+    }
+
+    h3 {
+        text-align: center;
+        transform: scale(0.94);
+        animation: scale 3s forwards cubic-bezier(0.5, 1, 0.89, 1);
+        opacity: 0;
+        filter: blur(4px);
+        animation: fade-into 1.5s 0.2s forwards cubic-bezier(0.11, 0, 0.5, 0);
+        -webkit-animation-delay: 1s;
+    }   
+
+    .footer-icons {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+    }
+
+    .center-div {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        text-align: center;
+        width: max-content;
+    }
+
+        .center-div h3 {
+            font-family: 'osr';
+            letter-spacing: 3px;
+            text-shadow: 3px 3px #3c3c3c;
+        }
+
+        .center-div h1 {
+            font-family: 'ossb';
+            letter-spacing: 5px;
+            text-shadow: 3px 3px #3c3c3c;
+        }
+
+    @@media (min-width: 575px) {
+        .navbar-brand {
+            display: none;
+        }
+    }
+
+    @@media (min-width: 600px) {
+        .center-div h3 {
+            font-size: 1.75rem;
+        }
+
+        .center-div h1 {
+            font-size: 4.5rem;
+        }
+    }
+
+    @@media (max-width: 500px) {
+        .center-div h3 {
+            font-size: 1.75rem;
+        }
+
+        .center-div h1 {
+            font-size: 2.5rem;
+        }
+    }
+</style>
+
+@if (Model != null)
+{
+    <div class="center-div">
+        <h1>@Model.Heading</h1>
+        <h3>@Model.SubHeading</h3>
+    </div>
+}
+else
+{
+    <h6>No Banner Select</h6>
+}
+@*<div class="center-div">
+    <h1>leslie d'souza</h1>
+    <h3>cinematographer</h3>
+</div>*@
+<script>
+    $(document).ready(function () {
+        var image = '@Model.Image';
+        $('body').css('background-image', 'url(' + image +')');
+    });
+</script>

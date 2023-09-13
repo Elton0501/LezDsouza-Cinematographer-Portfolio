@@ -1,0 +1,235 @@
+﻿@model Models.Work
+
+@{
+    ViewBag.Title = "WorkEdit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    var menuCat = ViewBag.CatItem;
+}
+
+<style>
+    .img-pro-box {
+        width: 100%;
+        margin: 1rem;
+        border-radius: 10px;
+    }
+
+    .error {
+        font-size: 1rem;
+        width: 100%;
+    }
+
+    .img-boxx {
+        position: relative;
+    }
+
+    #img-delete {
+        position: absolute;
+        left: 10px;
+        top: 0;
+        padding: 4px 8px 2px;
+        background: white;
+        font-size: 1.3rem;
+        border-radius: 20px;
+    }
+
+    .btn-outline-danger:hover {
+        color: #fff;
+        background-color: #e74a3b !important;
+        border-color: #e74a3b !important;
+    }
+</style>
+
+
+
+<div class="adminpage-head">
+    <div class="card shadow mb-4">
+        <div class="form-horizontal">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <h4>Edit Work <small style="color: #3d63d2;">@Model.ProjectName</small></h4>
+            </div>
+
+            <div class="card-body">
+                <form id="Productcreate">
+                    <input name="Id" value="@Model.Id" hidden />
+                    <input name="CreatedOn" value="@Model.CreatedOn" hidden />
+                    <input name="CreatedBy" value="@Model.CreatedBy" hidden />
+                    <input name="IsActive" value="@Model.IsActive.ToString()" hidden/>
+                    <input name="oldimg" value="@Model.Image" hidden />
+                    <div class="row">
+                        <div class="form-group col-md-6">
+                            <label class="control-label">Project Name</label><br />
+                            <input class="form-control" name="ProjectName" value="@Model.ProjectName" required />
+                        </div>
+
+                        <div class="form-group col-md-6">
+                            @Html.LabelFor(model => model.WorkId, "Category", htmlAttributes: new { @class = "control-label col-md-10" })
+                            <div class="col-md-10">
+                                @Html.DropDownList("WorkId", (IEnumerable<SelectListItem>)ViewBag.CatItem, optionLabel: "Select Category", htmlAttributes: new { @class = "form-control categoryDropDown" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Description</label><br />
+                        <textarea id="desc" class="form-control" name="Description-content">@(Model.Description != null && Model.Description.Length > 0 ? Model.Description : "")"</textarea>
+                        <input type="text" name="Description" value="@(Model.Description != null && Model.Description.Length > 0 ? Model.Description : "")" id="Description" hidden />
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-md-6 col-12">
+                            <div class="form-group">
+                                <label class="control-label">Vimeo</label><br />
+                                <input class="form-control" name="Vimeo" id="Vimeo" value="@Model.Vimeo" required />
+                            </div>
+                        </div>
+                        <div class="form-group col-md-6 col-12">
+                            <div class="img-container">
+                                <label for="exampleFormControlInput1">Image</label>
+                                <br />
+                                <input name="Image" id="Image" value="@(Model.Image != null && Model.Image.Length > 1 ? Model.Image : "")" hidden />
+                                <input id="imageUpload" type="file" name="ImageOne" accept="image/*" class="form-control-file">
+                                <br />
+                                <img id="PlaceImage" alt="" src="@(Model.Image != null && Model.Image.Length > 1 ? Model.Image : "")" style="width: 20%; margin-top: 5px;" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-6">
+                            <label class="control-label mr-2">Do you want to show this in All section? </label>
+                            <label class="switch">
+                                @{
+                                    var truefeaturedStatus = Model.isAll == true ? "Checked" : string.Empty;
+                                }
+                                <input type="checkbox" id="isAll" @truefeaturedStatus>
+                                <span class="slider round" id=""></span>
+                            </label>
+                            <input readonly="readonly" id="All" value="@Model.isAll" name="isAll" hidden />
+                        </div>
+                        <div class="col-6">
+                            <div class="form-group col-md-6">
+                                <label class="control-label">Sequence No</label><br />
+                                <input type="number" value="@Model.SeqNo" class="form-control" name="SeqNo" required />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex">
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <button class="btn btn-default btn-outline-primary" id="ProductCreateBtn" type="button">Create</button>
+                            </div>
+                        </div>
+                        <div class="form-group ml-3">
+                            <div class="">
+                                <a id="productbox-close" href="/Admin/WorkList" class="btn btn-default btn-outline-danger">Close</a>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/Content/ckeditor/ckeditor.js"></script>
+<script>
+    $(document).ready(function () {
+        CKEDITOR.replace('Description-content');
+    });
+    $('#Productcreate').validate({
+        rules: {
+            ProjectName: {
+                required: true,
+            },
+            Vimeo: {
+                required: true,
+            },
+            SeqNo: {
+                required: true,
+            },
+        },
+        messages: {
+            ProjectName: {
+                required: '* Project Name is required',
+            },
+            Vimeo: {
+                required: '* Vimeo Value is required',
+            },
+            SeqNo: {
+                required: '* Sequence No. is required',
+            },
+        }
+    });
+    $("#ProductCreateBtn").click(function (e) {
+        var ckdata = CKEDITOR.instances.desc.getData();
+        $("#Description").val(ckdata);
+        if ($("#Productcreate").valid()) {
+            $.ajax({
+                type: 'Post',
+                url: '@Url.Action("WorkEdit", "Admin")',
+                data: $("#Productcreate").serialize(),
+            })
+                .done(function (response) {
+                    if (response == "true") {
+                        Swal.fire({
+                            position: 'top-end',
+                            icon: 'success',
+                            title: 'Product added Successfully',
+                            showConfirmButton: false,
+                            timer: 1500
+                        })
+                        setTimeout(function () {// wait for 5 secs(2)
+                            window.location.href ="/Admin/WorkList" // then reload the page.(3)
+                        }, 1550);
+                    }
+            })
+            .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Something went wrong!',
+                })
+            });
+        }
+    });
+    $('#isAll').change(function () {
+        if (this.checked) {
+            $("#All").val("true");
+        }
+        else { $("#All").val("false"); }
+
+    });
+        $("#imageUpload").change(function () {
+        var element = this;
+
+        var formData = new FormData();
+        var totlaFiles = element.files.length;
+
+        for (var i = 0; i < totlaFiles; i++) {
+            var file = element.files[i];
+            formData.append("Photo", file)
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("UploadImage","Image")',
+            data: formData,
+            dataType: 'json',
+            contentType: false,
+            processData: false
+        })
+            .done(function (response) {
+                if (response.Success == true)
+                {
+                    $("#Image").val(response.ImageURL);
+                    $("#PlaceImage").attr("src", response.ImageURL);
+                }
+        })
+        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops...',
+                text: 'Something went wrong!',
+            })
+        });
+    });
+</script>

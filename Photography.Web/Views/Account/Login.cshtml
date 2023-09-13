@@ -1,0 +1,53 @@
+﻿
+@{
+    ViewBag.Title = "Login";
+    var message = Convert.ToString(TempData["ConfirmEmail"]);
+}
+
+<link href="~/Content/LoginCss.css" rel="stylesheet" />
+
+<style>
+    body {
+        background-image: url('../../content/images/login-bg.jpg');
+        height: 100vh;
+        background-size:cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    footer {
+        margin-top: 0;
+    }
+
+    .login-box {
+        padding: 5rem 0;
+        max-width: 1500px;
+    }
+
+    .logon-wrap {
+        background-color: #ffffff4d;
+        padding: 3rem 1rem;
+        margin: 0 0.5rem;
+        border-radius: 10px;
+    }
+
+    .inbor {
+        border: 1px solid #21252908;
+        background: #21252908;
+    }
+</style>
+
+<div class="img">
+    <section class="ftco-section">
+        @{
+            Html.RenderPartial("PartialLogin");
+        }
+    </section>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $(".navbar").hide();
+        $(".footer").hide();
+    });
+</script>

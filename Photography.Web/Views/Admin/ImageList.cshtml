@@ -1,0 +1,189 @@
+﻿@{
+    ViewBag.Title = "ImageList";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/themes/base/jquery-ui.min.css" integrity="sha512-ELV+xyi8IhEApPS/pSj66+Jiw+sOT1Mqkzlh8ExXihe4zfqbWkxPRi8wptXIO9g73FSlhmquFlUOuMSoXz5IRw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.13.2/jquery-ui.min.js" integrity="sha512-57oZ/vW8ANMjR/KQ6Be9v/+/h6bq9/l3f0Oc7vn6qMqyhvPd1cvKBRWWpzu0QoneImqr2SkmO4MSqU+RpHom3Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<style>
+    #OrderViewTable select {
+        padding: 3px 15px;
+        border-bottom: 1px solid #5a5c69;
+        border-top: none;
+        border-left: none;
+        border-right: none;
+        font-size: 13px;
+        outline: none;
+    }
+
+    #OrderStatus, #ImageType, #Visibility {
+        width: 100%;
+        color: #747474;
+        padding: 6px 10px !important;
+        border: 1px solid #c7c7c7;
+        border-radius: 6px;
+        outline: none !important;
+        margin-right: 10px;
+    }
+
+    .btn {
+        padding: 2px 8px !important;
+    }
+
+    #dropdownMenuButton1 {
+        background: transparent;
+        color: #858585;
+        padding: 6px 22.5px !important;
+        border: 1px solid #c7c7c7;
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+
+    #datepicker1, #datepicker {
+        color: black;
+        padding: 6px 10px !important;
+        border: 1px solid #c7c7c7;
+        border-radius: 6px;
+        outline: none !important;
+        margin-right: 10px;
+    }
+</style>
+<div class="product-table">
+    <div class="adminpage-head">
+        <div class="card shadow mb-4">
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                <div>
+                    <h6 class="m-0 font-weight-bold text-primary text-uppercase">Images - <small style="color: var(--success);" id="imagesCount"></small></h6>
+                </div>
+                <div>
+                    <a href="/Admin/AddImage" class="btn btn-primary" id="add-product">
+                        Add Image
+                    </a>
+                </div>
+
+            </div>
+            <div class="card-body">
+                <form id="Filter">
+                    <div id="buttons" class="d-flex align-content-start flex-wrap">
+                        <div class="dropdown dropdown1 mr-2 mb-1">
+                            <input type="text" name="name" value="" class="form-control" id="searchByID" placeholder="seaech by id eg: 2" />
+                        </div>
+                        <div class="dropdown mr-2 mb-1" style="flex-grow: 1;">
+                            <select name="ImageType" id="ImageType">
+                                <option value="-1" selected="selected">Image Type</option>
+                                @if (ViewBag.CatItem != null)
+                                {
+                                    foreach (var item in ViewBag.CatItem)
+                                    {
+                                        <option value="@item.Value">@item.Text</option>
+                                    }
+                                }
+                            </select>
+                        </div>
+                        <p style=" margin-bottom: 5px;"> <input type="text" id="datepicker" placeholder="Start Date:" autocomplete="off"></p>
+                        <p> <input type="text" id="datepicker1" placeholder="End Date:" autocomplete="off"></p>
+                        <div>
+                            <button type="button" class="reset btn btn-danger" onclick="ResetBtn();" style=" padding: 5px 20px !important; margin-bottom: 1rem;">Reset</button>
+                        </div>
+                    </div>
+                </form>
+                <hr style="margin-top: 0rem !important; border-top: 1px solid rgb(0 0 0 / 35%) !important; " />
+                <div id="tableData" class="table-responsive">
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+     $(document).ready(function () {
+         loadPOPartial();
+     });
+    $(function () {
+        $("#datepicker").datepicker({
+            dateFormat: "dd-mm-yy",
+            onSelect: function (d, i) {
+                var edate = $("#datepicker1").val().toString();
+                if (d !== i.lastVal) {
+                    if (edate !== null && edate !== "") {
+                        if (edate >= d) {
+                            $(this).change();
+                            loadPOPartial();
+                        }
+                        else {
+                            Swal.fire('start date is less then end date')
+                        }
+                    }
+                    else {
+                        $(this).change();
+                        loadPOPartial();
+                    }
+                }
+            }
+        });
+        $("#datepicker1").datepicker({
+            dateFormat: "dd-mm-yy",
+            onSelect: function (d, i) {
+                var sdate = $("#datepicker").val().toString();
+                if (d !== i.lastVal) {
+                    if (sdate !== null && sdate !== "") {
+                        if (sdate <= d) {
+                            $(this).change();
+                            loadPOPartial();
+                        }
+                        else {
+                            Swal.fire('end date is greater then start date')
+                        }
+                    }
+                    else {
+                        $(this).change();
+                        loadPOPartial();
+                    }
+                }
+            }
+        });
+    });
+    function ResetBtn() {
+        $('#Filter')[0].reset();
+        loadPOPartial();
+        $(".dropdown2").find(".multi-select-button").text("Order Status");
+    }
+    $('#searchByID').on('keyup', function () {
+        loadPOPartial();
+    });
+    $('#ImageType').change(function () {
+        $("#pageNo").val("");
+        // do something with the selected value
+        loadPOPartial();
+    });
+
+    function loadPOPartial() {
+        var Page = $("#pageNo").val();
+        var searchByID = $("#searchByID").val();
+        var imageType = $("#ImageType").val();
+        var startDate = $("#datepicker").val().toString();
+        var endDate = $("#datepicker1").val().toString();
+         $.ajax({
+             type: "POST",
+             url: '@Url.Action("ImageListPartial", "Admin")',
+             data: {
+                 pageNo: Page,
+                 Id: searchByID,
+                 ImageType: imageType,
+                 StartDate: startDate,
+                 EndDate: endDate
+                 //EndDate: endDate
+             }
+         })
+             .done(function (response) {
+                $("#tableData").html(response);
+             })
+             .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Oops...',
+                     text: 'Something went wrong!',
+                 })
+         });
+    }
+</script>

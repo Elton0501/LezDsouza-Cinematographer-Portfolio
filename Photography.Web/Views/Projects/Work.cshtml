@@ -1,0 +1,198 @@
+﻿@model List<Models.Category>
+@{
+    ViewBag.Title = "Work";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://player.vimeo.com/api/player.js"></script>
+
+<style>
+    body {
+        background-color: white;
+        color: black;
+    }
+    a{
+        cursor:pointer;
+    }
+
+    .navbar-dark .navbar-toggler-icon {
+        background-image: url('../../content/images/list.svg') !important;
+    }
+    .navbar-dark {
+        background-color: white !important;
+    }
+
+    .nav-link {
+        color: black !important;
+    }
+
+    .navbar-dark .navbar-brand {
+        color: black;
+    }
+
+    .footer-icons {
+        background-color: white;
+        color: black !important;
+    }
+
+        .footer-icons a {
+            color: black !important;
+        }
+
+    .navbar-dark .navbar-brand:focus, .navbar-dark .navbar-brand:hover {
+        color: black;
+    }
+
+    .sub-nav {
+        margin-top: 12rem;
+    }
+
+    .sub-nav-item a {
+        color: grey;
+    }
+
+    .sub-nav-item .active {
+        color: black;
+        font-weight: 600;
+    }
+
+    .vim {
+        width: 100%;
+        transition: transform 1s;
+    }
+
+    .vim:hover {
+            -ms-transform: scale(1.1); /* IE 9 */
+            -webkit-transform: scale(1.1); /* Safari 3-8 */
+            transform: scale(1.1);
+        }
+
+    .thumbnails h5 {
+        text-align: center;
+        padding: 10px 0;
+    }
+
+    .work-dw {
+        display: flex;
+        width: fit-content;
+        margin: 2rem auto;
+        border: 1px solid black;
+        border-radius: 24px;
+    }
+
+    .btn:focus {
+        outline: 0;
+        box-shadow: none !important;
+    }
+
+    .workk-box{
+        margin: 1rem 5rem;
+    }
+
+    @@media(max-width:1050px) {
+
+        .workk-box {
+            margin: 1rem 2rem;
+        }
+    }
+
+    @@media(max-width:600px) {
+        .sub-nav {
+            margin-top: 9rem;
+            margin-bottom: 2vh;
+        }
+
+        .nav-link {
+            padding: 5px 14px;
+        }
+
+        .workk-box {
+            margin: 1rem 0rem;
+        }
+    }
+</style>
+
+<div class="workk-box">
+   
+
+    <div class="btn-group work-dw">
+
+        <button class="btn dropdown-toggle" name="recordinput" data-toggle="dropdown">
+            All
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="nav-link active" id="0" onclick="loadwork('0', 'All')">All</a></li>
+            @for (int i = 0; i < Model.Count(); i++)
+            {
+                <li>
+                    @if (Model[i].isDescription == false)
+                    {
+                        <a class="nav-link" id="@Model[i].Id" onclick="loadwork('@Model[i].Id', '@Model[i].Name')">@Model[i].Name</a>
+                    }
+                    else
+                    {
+                        <a class="nav-link" id="@Model[i].Id" onclick="loadworkwithdes('@Model[i].Id', '@Model[i].Name')">@Model[i].Name</a>
+                    }
+
+                </li>
+            }
+        </ul>
+
+    </div>
+    <div id="workContainer">
+
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        var id = 0;
+        var name = "All";
+        loadwork(id, name);
+    });
+    function loadwork(id, name) {
+        $(".nav-link").removeClass("active");
+        $("#" + id).addClass("active");
+         $.ajax({
+             url: '@Url.Action("WorkPartial", "Projects")',
+             data: {
+                 Id: id,
+             }
+         })
+             .done(function (response) {
+                 $("#workContainer").html(response);
+             })
+             .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Oops...',
+                     text: 'Something went wrong!',
+                 })
+         });
+    }
+    function loadworkwithdes(id, name) {
+        $(".nav-link").removeClass("active");
+        $("#" + id).addClass("active");
+         $.ajax({
+             url: '@Url.Action("Narrative", "Projects")',
+             data: {
+                 Id: id,
+             }
+         })
+             .done(function (response) {
+                 $("#workContainer").html(response);
+             })
+             .fail(function (XMLHttpRequest, textStatus, errorThrown) {
+                 Swal.fire({
+                     icon: 'error',
+                     title: 'Oops...',
+                     text: 'Something went wrong!',
+                 })
+         });
+    }
+
+    $(".dropdown-menu li a").click(function () {
+        var selText = $(this).text();
+        $(this).parents('.btn-group').find('.dropdown-toggle').html(selText + ' <span class="caret"></span>');
+    });
+</script>

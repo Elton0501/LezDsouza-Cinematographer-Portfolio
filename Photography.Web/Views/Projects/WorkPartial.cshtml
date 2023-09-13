@@ -1,0 +1,25 @@
+﻿@model List<Models.Work>
+@{
+    Layout = null;
+}
+<div class="thumbnails row mt-3">
+
+    @if (Model != null && Model.Count > 0)
+    {
+        foreach (var item in Model)
+        {
+            <div class="col-lg-6 col-12">
+                @*<img src="@item.Image" />*@
+                <div class="vim">
+                    @Html.Raw(item.Vimeo)
+                </div>
+                <h5>@item.ProjectName</h5>
+
+            </div>
+        }
+    }
+            else
+            {
+                <h6 class="text-center">No data available!</h6>
+            }
+</div>

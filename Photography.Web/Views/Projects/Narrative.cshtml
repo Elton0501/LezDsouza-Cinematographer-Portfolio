@@ -1,0 +1,86 @@
+﻿@model List<Models.Work>
+@{
+    ViewBag.Title = "Narrative";
+    Layout = null;
+}
+
+<style>
+    body {
+        background-color: white;
+        color: black;
+    }
+
+    .navbar-dark {
+        background-color: white !important;
+    }
+
+    .nav-link {
+        color: black !important;
+    }
+
+    .navbar-dark .navbar-brand {
+        color: black;
+    }
+
+    .sub-nav {
+        margin-top: 12rem;
+    }
+
+    .sub-nav-item a {
+        color: grey;
+    }
+
+    .sub-nav-item .active {
+        color: black;
+        font-weight: 600;
+    }
+
+    .thumbnails img {
+        width: 100%;
+        transition: transform 1s;
+        padding: 1rem;
+    }
+
+        .thumbnails img:hover {
+            -ms-transform: scale(1.1); /* IE 9 */
+            -webkit-transform: scale(1.1); /* Safari 3-8 */
+            transform: scale(1.1);
+        }
+
+    .thumbnails h5 {
+        text-align: right;
+        padding: 10px 0;
+    }
+
+    .content {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>
+
+<div class="thumbnails mt-3">
+    @if (Model != null && Model.Count > 0)
+    {
+        foreach (var item in Model)
+        {
+            <div class="row">
+                <div class="col-lg-6 col-md-6 col-12 pb-4">
+                    <div class="vim">
+                        @Html.Raw(item.Vimeo)
+                    </div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-12 content">
+                    <h5>
+                        @Html.Raw(item.Description)
+                    </h5>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <h6 class="text-center">No data available!</h6>
+    }
+</div>
+

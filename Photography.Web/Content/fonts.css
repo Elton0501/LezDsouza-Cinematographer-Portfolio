@@ -1,0 +1,40 @@
+
+@font-face {
+    font-family: 'os';
+    src: url('../fonts/opensans.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'osb';
+    src: url('../fonts/OpenSans-Bold.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'osbi';
+    src: url('../fonts/OpenSans-BoldItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'osi';
+    src: url('../fonts/OpenSans-Italic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'osl';
+    src: url('../fonts/OpenSans-Light.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'osli';
+    src: url('../fonts/OpenSans-LightItalic.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'osr';
+    src: url('../fonts/OpenSans-Regular.ttf') format('truetype');
+}
+
+@font-face {
+    font-family: 'ossb';
+    src: url('../fonts/opensans-semibold.ttf') format('truetype');
+}
