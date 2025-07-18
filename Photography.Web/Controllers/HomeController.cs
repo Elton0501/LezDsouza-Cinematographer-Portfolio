@@ -15,10 +15,18 @@ namespace Photography.Web.Controllers
         {
             try
             {
-                var userSession = HttpContext.Session["UserSession"];
+                var request = Request.UserAgent?.ToLower();
+				if (!string.IsNullOrEmpty(request))
+				{
+					if (request.Contains("iphone") || request.Contains("android") || request.Contains("mobile"))
+					{
+						return RedirectToAction("Work", "Projects");
+					}
+				}
+				var userSession = HttpContext.Session["UserSession"];
                 using (var context = new ApplicationDbContext())
                 {
-                    if (userSession == null)
+					if (userSession == null)
                     {
                         var UserSessionId = Guid.NewGuid();
                         HttpContext.Session["UserSession"] = UserSessionId;
@@ -28,13 +36,12 @@ namespace Photography.Web.Controllers
                         context.WebVisitCounts.Add(model);
                         context.SaveChanges();
                     }
-                    var data = context.HomeBanner.FirstOrDefault(x => x.IsActive == true);
-                    return View(data);
+					var data = context.HomeBanner.FirstOrDefault(x => x.IsActive == true);
+					return View(data);
                 }
             }
             catch (Exception)
             {
-
                 throw;
             }
         }
