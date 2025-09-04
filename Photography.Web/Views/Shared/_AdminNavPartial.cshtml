@@ -1,5 +1,6 @@
 ﻿@{
-    var user = Context.Session["Admin"];
+    //var user = Context.Session["Admin"];
+    var user = Convert.ToString(Request.Cookies["AdminEmail"].Value);
     var webinfo = Services.KeyService.Instance.keydata("BrandName");
 }
 

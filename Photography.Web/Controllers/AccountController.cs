@@ -106,8 +106,12 @@ namespace Photography.Web.Controllers
                     }
                     if (result.Value2 == "Admin")
                     {
-                        HttpContext.Session["Admin"] = Email;
-                        Url = "/Admin/Index";
+						// Create a cookie
+						HttpCookie adminCookie = new HttpCookie("AdminEmail", Email);
+						adminCookie.Expires = DateTime.Now.AddHours(1); // cookie expiry (optional)
+						Response.Cookies.Add(adminCookie);
+						//HttpContext.Session["Admin"] = Email;
+						Url = "/Admin/Index";
                     }
                     else
                     {

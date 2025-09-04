@@ -662,8 +662,6 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\bootstrap.js" />
-    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="EmailTemplate\EmailTemp.cshtml" />
     <Content Include="EmailTemplate\NewsLTemp.cshtml" />
     <Content Include="Content\ckeditor\CHANGES.md" />
@@ -711,6 +709,8 @@
     <Content Include="fonts\OpenSans-SemiBold.ttf" />
     <Content Include="fonts\OpenSans-SemiBoldItalic.ttf" />
     <Content Include="fonts\OpenSans.ttf" />
+    <Content Include="Scripts\bootstrap.js" />
+    <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Chart\Chart.js" />
     <Content Include="Scripts\cookie.js" />
     <Content Include="Scripts\dataTables.bootstrap4.js" />
