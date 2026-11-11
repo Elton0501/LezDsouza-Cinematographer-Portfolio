@@ -62,8 +62,8 @@ namespace Photography.Web.Controllers
                             string link = HttpContext.Request.Url.GetLeftPart(UriPartial.Authority) + "/Account/ConfirmUserEmail?email=" + HelperService.Instance.Encrypt(Email);
                             string subject = "Floral Fiesta: Email Confirmation";
                             string Head = "Please confirm your email here.";
-                            string message = "<p>Thank you for registering at Floral Fiesta.</p></br>"
-                                + "<p>Please click below link to confirm your email and enjoy a great shopping expierience with us.</p>" +
+                            string message = "<p>Thank you for registering at Leslie Dsouza.</p></br>"
+                                + "<p>Please click below link to confirm your email and enjoy a great expierience with us.</p>" +
                                 "<a href=\"" + link + "\">click to confirm your email</a>";
                             helperController.templateEmail(Email, subject, Head, message);
                         }
@@ -106,7 +106,7 @@ namespace Photography.Web.Controllers
                     }
                     if (result.Value2 == "Admin")
                     {
-                        HttpContext.Session["Admin"] = Email;
+                        Session["Admin"] = Email;
                         Url = "/Admin/Index";
                     }
                     else

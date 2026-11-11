@@ -11,7 +11,7 @@ using Microsoft.Ajax.Utilities;
 
 namespace Photography.Web.Controllers
 {
-    [AdminAuthorizationFilterAttribute]
+   //[AdminAuthorizationFilterAttribute]
     public class AdminController : Controller
     {
         // GET: Admin
