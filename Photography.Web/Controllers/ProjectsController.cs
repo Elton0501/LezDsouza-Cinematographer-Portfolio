@@ -57,11 +57,11 @@ namespace Photography.Web.Controllers
                 var catName = "All";
                 if (Id == 0)
                 {
-                    WorkAll = context.Work.Where(x => x.isAll == true).OrderByDescending(x=>x.SeqNo).ToList();
+                    WorkAll = context.Work.Where(x => x.isAll == true && x.IsActive == true).OrderByDescending(x=>x.SeqNo).ToList();
                 }
                 else
                 {
-                    WorkAll = context.Work.Where(x => x.WorkId == Id).OrderByDescending(x=>x.SeqNo).ToList();
+                    WorkAll = context.Work.Where(x => x.WorkId == Id && x.IsActive == true).OrderByDescending(x=>x.SeqNo).ToList();
                     var category = context.Categories.FirstOrDefault(x => x.Id == Id);
                     catName = category.Name;
                 }
