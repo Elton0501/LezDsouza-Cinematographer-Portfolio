@@ -104,14 +104,27 @@ namespace Photography.Web.Controllers
                         oldcookie.Expires = DateTime.Now.AddDays(-1);
                         Response.Cookies.Add(oldcookie);
                     }
+                    //              if (result.Value2 == "Admin")
+                    //              {
+                    //// Create a cookie
+                    //HttpCookie adminCookie = new HttpCookie("AdminEmail", Email);
+                    //adminCookie.Expires = DateTime.Now.AddHours(1); // cookie expiry (optional)
+                    //Response.Cookies.Add(adminCookie);
+                    ////HttpContext.Session["Admin"] = Email;
+                    //Url = "/Admin/Index";
+                    //              }
                     if (result.Value2 == "Admin")
                     {
-						// Create a cookie
-						HttpCookie adminCookie = new HttpCookie("AdminEmail", Email);
-						adminCookie.Expires = DateTime.Now.AddHours(1); // cookie expiry (optional)
-						Response.Cookies.Add(adminCookie);
-						//HttpContext.Session["Admin"] = Email;
-						Url = "/Admin/Index";
+                        HttpCookie adminCookie = new HttpCookie("AdminEmail");
+
+                        adminCookie.Value = HelperService.Instance.Encrypt(Email);
+                        adminCookie.Expires = DateTime.Now.AddHours(1);
+                        adminCookie.HttpOnly = true;
+                        adminCookie.Secure = Request.IsSecureConnection;
+
+                        Response.Cookies.Add(adminCookie);
+
+                        Url = "/Admin/Index";
                     }
                     else
                     {

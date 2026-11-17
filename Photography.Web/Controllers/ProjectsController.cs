@@ -57,11 +57,11 @@ namespace Photography.Web.Controllers
                 var catName = "All";
                 if (Id == 0)
                 {
-                    WorkAll = context.Work.Where(x => x.isAll == true && x.IsActive == true).OrderByDescending(x=>x.SeqNo).ToList();
+                    WorkAll = context.Work.Where(x => x.isAll == true && x.IsActive == true && x.IsDeleted == false).OrderByDescending(x=>x.SeqNo).ToList();
                 }
                 else
                 {
-                    WorkAll = context.Work.Where(x => x.WorkId == Id && x.IsActive == true).OrderByDescending(x=>x.SeqNo).ToList();
+                    WorkAll = context.Work.Where(x => x.WorkId == Id && x.IsActive == true && x.IsDeleted == false).OrderByDescending(x=>x.SeqNo).ToList();
                     var category = context.Categories.FirstOrDefault(x => x.Id == Id);
                     catName = category.Name;
                 }
@@ -84,7 +84,7 @@ namespace Photography.Web.Controllers
         {
             using(var context = new ApplicationDbContext())
             {
-                var works = context.Work.Where(x => x.WorkId == Id).OrderBy(x=>x.SeqNo).ToList();
+                var works = context.Work.Where(x => x.WorkId == Id && x.IsActive == true && x.IsDeleted == false).OrderBy(x=>x.SeqNo).ToList();
                 var category = context.Categories.FirstOrDefault(x => x.Id == Id);
                 var userSession = HttpContext.Session[category.Name];
                 if (userSession == null)

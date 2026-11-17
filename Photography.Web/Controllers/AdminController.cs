@@ -1,39 +1,79 @@
 ﻿using DataBase;
 using DataModels;
+using Microsoft.Ajax.Utilities;
 using Models;
 using Services;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Net.NetworkInformation;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Mvc;
-using Microsoft.Ajax.Utilities;
 
 namespace Photography.Web.Controllers
 {
    //[AdminAuthorizationFilterAttribute]
     public class AdminController : Controller
     {
-        // GET: Admin
+
         public ActionResult Index()
         {
-            var model = new AdminIndexModel();
-            using(var context = new ApplicationDbContext())
+            try
             {
-                var WebVisitCount = context.WebVisitCounts.ToList();
-                model.WebVisitCount = WebVisitCount.Count();
-                var workCat = context.Categories.ToList();
-                var visitpagecount = context.PageVisitCounts.ToList();
-                var ImagesVisitCount = visitpagecount.Where(x => x.VisitPage == "Images").ToList();
-                model.ImagesVisitCount = ImagesVisitCount != null ? ImagesVisitCount.Count().ToString() : "0";
-                model.WorkCategory = workCat.Select(x =>
+                //HttpCookie adminCookie = Request.Cookies["AdminEmail"];
+
+                //if (adminCookie == null || string.IsNullOrEmpty(adminCookie.Value))
+                //{
+                //    return RedirectToAction("Login", "Account");
+                //}
+
+                //string adminEmail = HelperService.Instance.Decrypt(adminCookie.Value);
+
+                //if (string.IsNullOrEmpty(adminEmail))
+                //{
+                //    return RedirectToAction("Login", "Account");
+                //}
+
+                //// Verify that this email belongs to an admin.
+                //var result = AccountService.Instance.Login(adminEmail, null);
+
+                //if (result == null || result.Result != true || result.Value2 != "Admin")
+                //{
+                //    return RedirectToAction("Login", "Account");
+                //}
+
+                var model = new AdminIndexModel();
+
+                using (var context = new ApplicationDbContext())
                 {
-                    x.VisitCount = HelperService.Instance.VisitPageCount(x.Name);
-                    return x;
-                }).ToList();
-                HelperService.Instance.RemoveOldUserVist();
+                    var WebVisitCount = context.WebVisitCounts.ToList();
+                    model.WebVisitCount = WebVisitCount.Count();
+
+                    var workCat = context.Categories.ToList();
+                    var visitpagecount = context.PageVisitCounts.ToList();
+
+                    var ImagesVisitCount = visitpagecount
+                        .Where(x => x.VisitPage == "Images").ToList();
+
+                    model.ImagesVisitCount = ImagesVisitCount.Count().ToString();
+
+                    model.WorkCategory = workCat.Select(x =>
+                    {
+                        x.VisitCount = HelperService.Instance.VisitPageCount(x.Name);
+                        return x;
+                    }).ToList();
+
+                    HelperService.Instance.RemoveOldUserVist();
+                }
+
+                return View(model);
             }
-            return View(model);
+            catch (Exception)
+            {
+                return RedirectToAction("Login", "Account");
+            }
         }
         #region WorkCategory
         public ActionResult CategoryList()
@@ -130,25 +170,52 @@ namespace Photography.Web.Controllers
         }
         #endregion
         #region Work
-        public ActionResult WorkList()
+        //public ActionResult WorkList()
+        //{
+        //    try
+        //    {
+        //        using (var context = new ApplicationDbContext())
+        //        {
+        //            var workList = context.Work.Where(x=>x.IsDeleted == false).ToList();
+        //            var catList = context.Categories.ToList();
+        //            workList = workList.Select(x =>
+        //            {
+        //                x.Category = catList.FirstOrDefault(z => z.Id == x.WorkId);
+        //                return x;
+        //            }).OrderByDescending(x=>x.SeqNo).ToList();
+        //            return View(workList);
+        //        }
+        //    }
+        //    catch (Exception)
+        //    {
+        //        throw;
+        //    }
+        //}
+
+        public async Task<ActionResult> WorkList()
         {
-            try
+            using (var context = new ApplicationDbContext())
             {
-                using (var context = new ApplicationDbContext())
-                {
-                    var workList = context.Work.ToList();
-                    var catList = context.Categories.ToList();
-                    workList = workList.Select(x =>
+                var works = await (
+                    from w in context.Work.AsNoTracking()
+                    where !w.IsDeleted
+                    join c in context.Categories.AsNoTracking() on w.WorkId equals c.Id into cats   // same match as your old code
+                    from c in cats.DefaultIfEmpty()                                                  // left join: no crash if category missing
+                    orderby w.SeqNo descending
+                    select new WorkListItemViewModel
                     {
-                        x.Category = catList.FirstOrDefault(z => z.Id == x.WorkId);
-                        return x;
-                    }).OrderByDescending(x=>x.SeqNo).ToList();
-                    return View(workList);
-                }
-            }
-            catch (Exception)
-            {
-                throw;
+                        Id = w.Id,
+                        ProjectName = w.ProjectName,
+                        CategoryName = c.Name,
+                        Image = w.Image,
+                        Description = w.Description,
+                        Vimeo = w.Vimeo,
+                        IsActive = w.IsActive,
+                        IsAll = w.isAll,
+                        CreatedOn = w.CreatedOn
+                    }).ToListAsync();
+
+                return View(works);
             }
         }
         public ActionResult WorkStatus(int proId, bool status)
@@ -258,6 +325,29 @@ namespace Photography.Web.Controllers
             }
             return Json(result);
 
+        }
+
+        [HttpPost]
+        public ActionResult WorkDelete(int Id)
+        {
+            var result = false;
+            try
+            {
+                using (var context = new ApplicationDbContext())
+                {
+                    var product = context.Work.FirstOrDefault(x => x.Id == Id);
+                    product.IsDeleted = true;
+                    context.Entry(product).State = EntityState.Modified;
+                    context.SaveChanges();
+                    result = true;
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return Json(result);
         }
 
         #endregion
@@ -721,3 +811,28 @@ namespace Photography.Web.Controllers
         #endregion
     }
 }
+
+
+
+
+// GET: Admin
+//public ActionResult Index()
+//{
+//    var model = new AdminIndexModel();
+//    using(var context = new ApplicationDbContext())
+//    {
+//        var WebVisitCount = context.WebVisitCounts.ToList();
+//        model.WebVisitCount = WebVisitCount.Count();
+//        var workCat = context.Categories.ToList();
+//        var visitpagecount = context.PageVisitCounts.ToList();
+//        var ImagesVisitCount = visitpagecount.Where(x => x.VisitPage == "Images").ToList();
+//        model.ImagesVisitCount = ImagesVisitCount != null ? ImagesVisitCount.Count().ToString() : "0";
+//        model.WorkCategory = workCat.Select(x =>
+//        {
+//            x.VisitCount = HelperService.Instance.VisitPageCount(x.Name);
+//            return x;
+//        }).ToList();
+//        HelperService.Instance.RemoveOldUserVist();
+//    }
+//    return View(model);
+//}

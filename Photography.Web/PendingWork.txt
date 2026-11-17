@@ -1,0 +1,14 @@
+Date: 17-11-2026 Changes
+
+1. If admin logged in admin panel before login it will redirect to error, instead it will redirect to login.
+Solution: Check user is logged in or not  inside the admin index method if not then redirect to login index.
+Currently it is commented.
+added default value in  _AdminNavPArtial.cshtml   var user = "Jeet Negi";
+
+
+2. Remove unnecessary column in table and put status in start.
+Solution: Changes done on WorkList.cshtml column
+          Add column IdDelete in database.
+          Add column in datamodel also.
+          Change WorkList.cshtml
+          Change over the HomeController 

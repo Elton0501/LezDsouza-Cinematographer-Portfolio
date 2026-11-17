@@ -49,6 +49,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ResultModel.cs" />
     <Compile Include="WebCharts.cs" />
+    <Compile Include="WorkListItemViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Models\Models.csproj">

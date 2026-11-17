@@ -22,5 +22,6 @@ namespace Models
         [NotMapped]
         public string oldimg { get; set; }
         public int SeqNo { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

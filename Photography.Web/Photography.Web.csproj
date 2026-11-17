@@ -709,6 +709,7 @@
     <Content Include="fonts\OpenSans-SemiBold.ttf" />
     <Content Include="fonts\OpenSans-SemiBoldItalic.ttf" />
     <Content Include="fonts\OpenSans.ttf" />
+    <Content Include="PendingWork.txt" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\Chart\Chart.js" />
@@ -760,7 +761,7 @@
     <Content Include="Views\Admin\CategoryList.cshtml" />
     <Content Include="Views\Admin\CategoryAdd.cshtml" />
     <Content Include="Views\Admin\CategoryEdit.cshtml" />
-    <Content Include="Views\Admin\WorkList.cshtml" />
+    <Content Include="Views\Admin\_WorkList.cshtml" />
     <Content Include="Views\Admin\WorkAdd.cshtml" />
     <Content Include="Views\Admin\WorkEdit.cshtml" />
     <Content Include="Views\Admin\ImageList.cshtml" />
@@ -779,6 +780,7 @@
     <Content Include="Views\Admin\AddBanner.cshtml" />
     <Content Include="Views\Admin\EditBanner.cshtml" />
     <Content Include="Views\Projects\WorkPartial.cshtml" />
+    <Content Include="Views\Admin\WorkList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -839,16 +841,16 @@
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>
-  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
-    <PropertyGroup>
-      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
-    </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
-  </Target>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
   </Target>
   <Target Name="AfterBuild">
   </Target> -->
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
+  </Target>
 </Project>

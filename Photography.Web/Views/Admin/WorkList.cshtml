@@ -1,33 +1,34 @@
-﻿@model IEnumerable<Models.Work>
+@model IEnumerable<DataModels.WorkListItemViewModel>
 
 @{
     ViewBag.Title = "WorkList";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
-    int Count = 0;
 }
 
 <div class="product-table">
     <div class="adminpage-head">
         <div class="card shadow mb-4">
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <div>
-                    <h6 class="m-0 font-weight-bold text-primary text-uppercase">Work - @Model.Count() <span style="color: var(--success);"></span></h6>
+                <h6 class="m-0 font-weight-bold text-primary text-uppercase">
+                    Work - <span id="work-count">@Model.Count()</span>
+                </h6>
+                <div class="d-flex align-items-center gap-2">
+                    <select id="status-filter" class="form-select form-control w-auto" aria-label="Filter by status" style=" width: 100% !important;">
+                        <option value="active" selected>Active</option>
+                        <option value="inactive">InActive</option>
+                    </select>
+                    <a href="@Url.Action("WorkAdd", "Admin")" class="btn btn-primary" id="add-product">Add</a>
                 </div>
-                <div>
-                    <a href="/Admin/WorkAdd" class="btn btn-primary" id="add-product">
-                        Add Work
-                    </a>
-                </div>
-
             </div>
+
             <div class="card-body table-responsive">
-                <table class="product-table table table-bordered" id="work-table" cellspacing="0">
+                @Html.AntiForgeryToken()
+                <table class="product-table table table-bordered" id="work-table" style="width:100%">
                     <thead class="thead-dark">
                         <tr>
-                            <th>#</th>
-                            <th>Action</th>
                             <th>Id</th>
-                            <th>Seq No.</th>
+                            <th>Action</th>
+                            <th>Status</th>
                             <th>Project Name</th>
                             <th>Type</th>
                             <th class="w-25">Image</th>
@@ -35,58 +36,52 @@
                             <th>Vimeo</th>
                             <th>All?</th>
                             <th>Date</th>
-                            <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach (var item in Model)
                         {
-                            Count = Count + 1;
-                        <tr>
-                            <td>@Count</td>
-                            <td>
-                                <div class="row">
-                                    <div class="button-act"><a class="editbtn btn btn-default btn-outline-dark" href="@Url.Action("WorkEdit","Admin",new {id = item.Id})" title="Edit"><i class="bi bi-pencil-square"></i></a></div>
-                                    <div style="display:none" class="button-act"><a class="deletebtn btn btn-default btn-outline-danger" href="@Url.Action("WorkDelete","Admin",new {id = item.Id})" title="Delete"><i class="bi bi-trash"></i></a></div>
-                                </div>
-                            </td>
-                            <td>@item.Id</td>
-                            <th>@item.SeqNo</th>
-                            <td>@item.ProjectName</td>
-                            <td>@item.Category.Name</td>
-                            <td>
-                                @if (item.Image != null && item.Image.Length > 0)
-                                {
-                                    <img class="w-50" src="@(item.Image != null && item.Image.Length >0 ? item.Image : "")" alt="@item.ProjectName" />
-                                }
-                                else
-                                {
-                                    <small>-</small>
-                                }
-                            </td>
-                            <td>@item.Description</td>
-                            <td>@item.Vimeo</td>
-                            <td>
-                                @if (item.isAll == true)
-                                {
-                                    <i style="font-size:1rem" class="bi bi-hand-thumbs-up text-success"></i>
-                                }
-                                else
-                                {
-                                    <i style="font-size:1rem" class="bi bi-hand-thumbs-down text-danger"></i>
-                                }
-                            </td>
-                            <td>@item.CreatedOn.ToString("MMM-dd-yyyy")</td>
-                            <td>
-                                <div class="form-check form-check-inline">
-                                    @{
-                                        var trueCheckedStatus = item.IsActive == true ? "Checked" : string.Empty;
+                            <tr data-id="@item.Id">
+                                <td>@item.Id</td>
+                                <td>
+                                    <div class="d-flex gap-2">
+                                        <a class="btn btn-outline-dark" href="@Url.Action("WorkEdit", "Admin", new { id = item.Id })" title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <button type="button" class="btn btn-outline-danger js-delete" data-id="@item.Id" title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                                <td data-order="@(item.IsActive ? 1 : 0)">
+                                    <button type="button"
+                                            class="btn btn-sm js-status @(item.IsActive ? "btn-success" : "btn-secondary")"
+                                            data-id="@item.Id" data-active="@(item.IsActive ? "true" : "false")"
+                                            title="Click to change status">
+                                        @(item.IsActive ? "Active" : "Inactive")
+                                    </button>
+                                </td>
+                                <td>@item.ProjectName</td>
+                                <td>@item.CategoryName</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(item.Image))
+                                    {
+                                        <img class="w-50" src="@item.Image" alt="@item.ProjectName"
+                                             loading="lazy" decoding="async" />
                                     }
-                                    <input type="hidden" name="Status" value='@item.IsActive' id="chkstatus" title="Status" />
-                                    <input class="form-check-input status-cb" data-id="@item.Id" id="chkstatus" type="checkbox" @trueCheckedStatus>
-                                </div>
-                            </td>
-                        </tr>
+                                    else
+                                    {
+                                        <small>-</small>
+                                    }
+                                </td>
+                                <td>@item.Description</td>
+                                <td>@item.Vimeo</td>
+                                <td data-order="@(item.IsAll ? 1 : 0)">
+                                    <i class="bi @(item.IsAll ? "bi-hand-thumbs-up text-success" : "bi-hand-thumbs-down text-danger")"
+                                       style="font-size:1rem"></i>
+                                </td>
+                                <td data-order="@item.CreatedOn.ToString("yyyyMMddHHmmss")">@item.CreatedOn.ToString("MMM-dd-yyyy")</td>
+                            </tr>
                         }
                     </tbody>
                 </table>
@@ -95,124 +90,108 @@
     </div>
 </div>
 
+
+
 <script>
-     $(document).ready(function () {
-        $("#work-table").DataTable();
-    });
-        //--------------Status-chechbox--------------------//
-
-    $('.status-cb').change(function () {
-        if ($(this).prop("checked") == true) {
-            Swal.fire({
-            title: 'Are you sure?',
-            text: "You want to change the status!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Change it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title:'Status',
-                    text:'Changed',
-                    icon:'success',
-                    showConfirmButton: false,
-                })
-            var ProId = $(this).attr("data-id");
-            var Status = true;
-            $.ajax({
-                type:'POST',
-            url: '@Url.Action("WorkStatus", "Admin")',
-            data: {
-                status: Status,
-                proId: ProId
-            }
-        })
-        .done(function (response) {
-            if (response == true) {
-                Swal.fire({
-                    title: 'Done',
-                    text: 'Successfully Change the status!',
-                })
-            }
-            else {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Something went wrong!',
-                })
-            }
-        })
-        .fail(function (XMLHttpRequest, textStatus, errorThrown) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Oops...',
-                text: 'Something went wrong!',
-            })
+    $(function () {
+        const table = $('#work-table').DataTable({
+            order: [],                       // keep server order (SeqNo desc)
+            pageLength: 25,
+            deferRender: true,
+            columnDefs: [{ orderable: false, targets: [1, 5] }]
         });
-            }
-            else {
-                window.location.reload();
-            }
-        })
-        }
-        else if ($(this).prop("checked") == false) {
-         Swal.fire({
-            title: 'Are you sure?',
-            text: "You want to change the status",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Yes, Change it!'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                Swal.fire({
-                    title: 'Status',
-                    text: 'Changed',
-                    icon: 'success',
-                    showConfirmButton: false,
-                })
-                var ProId = $(this).attr("data-id");
-                var Status = false;
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("WorkStatus", "Admin")',
-                    data: {
-                        status: Status,
-                        proId: ProId
-                    }
-                })
-                    .done(function (response) {
-                        if (response == true) {
-                            Swal.fire({
-                                title: 'Done',
-                                text: 'Successfully Change the status!',
-                            })
-                        }
-                        else {
-                            Swal.fire({
-                                icon: 'error',
-                                title: 'Oops...',
-                                text: 'Something went wrong!',
-                            })
-                        }
-                    })
-                    .fail(function (XMLHttpRequest, textStatus, errorThrown) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Oops...',
-                            text: 'Something went wrong!',
-                        })
-                    });
-            }
-            else {
-                window.location.reload();
-            }
-        })
-        }
 
+        // ---------- Active / InActive filter (default: Active) ----------
+        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+            if (settings.nTable.id !== 'work-table') return true;
+            const wantActive = $('#status-filter').val() === 'active';
+            const btn = $(table.row(dataIndex).node()).find('.js-status');
+            const isActive = btn.data('active') === true || btn.data('active') === 'true';
+            return isActive === wantActive;
+        });
+
+        table.on('draw', function () {
+            $('#work-count').text(table.rows({ search: 'applied' }).count());
+        });
+
+        $('#status-filter').on('change', function () { table.draw(); });
+        table.draw();                                   // apply the default filter on load
+
+        const token = $('input[name="__RequestVerificationToken"]').val();
+        const post = (url, data) =>
+            $.post(url, Object.assign({ __RequestVerificationToken: token }, data));
+        const fail = () => Swal.fire({ icon: 'error', title: 'Oops...', text: 'Something went wrong!' });
+
+        // ---------- Status toggle ----------
+        const paintStatus = (btn, active) => {
+            btn.data('active', active)
+               .toggleClass('btn-success', active)
+               .toggleClass('btn-secondary', !active)
+               .text(active ? 'Active' : 'Inactive');
+            const cell = btn.closest('td');
+            cell.attr('data-order', active ? 1 : 0);
+            table.cell(cell).invalidate().draw(false);     // keep sorting/search in sync
+        };
+
+        $('#work-table').on('click', '.js-status', async function () {
+            const btn = $(this);
+            const current = btn.data('active') === true || btn.data('active') === 'true';
+            const newState = !current;
+
+            const { isConfirmed } = await Swal.fire({
+                title: 'Are you sure?',
+                text: `Set this work to ${newState ? 'Active' : 'Inactive'}?`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, change it!'
+            });
+            if (!isConfirmed) return;
+
+            btn.prop('disabled', true);
+            try {
+                const ok = await post('@Url.Action("WorkStatus", "Admin")', { status: newState, proId: btn.data('id') });
+                if (ok === true) {
+                    paintStatus(btn, newState);
+                    Swal.fire({ icon: 'success', title: 'Status changed', timer: 1200, showConfirmButton: false });
+                } else {
+                    fail();
+                }
+            } catch {
+                fail();
+            } finally {
+                btn.prop('disabled', false);
+            }
+        });
+
+        // ---------- Delete ----------
+        $('#work-table').on('click', '.js-delete', async function () {
+            const row = $(this).closest('tr');
+            const id = $(this).data('id');
+
+            const { isConfirmed } = await Swal.fire({
+                title: 'Are you sure?',
+                text: 'You want to delete this work!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!'
+            });
+            if (!isConfirmed) return;
+
+            try {
+                const ok = await post('@Url.Action("WorkDelete", "Admin")', { Id: id });
+                if (ok === true) {
+                    table.row(row).remove().draw(false);                     // remove row, no reload (count updates on draw)
+                    Swal.fire({ icon: 'success', title: 'Deleted', timer: 1200, showConfirmButton: false });
+                } else {
+                    fail();
+                }
+            } catch {
+                fail();
+            }
+        });
     });
-    //------------//--Status-chechbox--//------------------//
 </script>
