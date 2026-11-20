@@ -14,7 +14,7 @@ using System.Web.Mvc;
 
 namespace Photography.Web.Controllers
 {
-   //[AdminAuthorizationFilterAttribute]
+    [AdminAuthorizationFilterAttribute]
     public class AdminController : Controller
     {
 
